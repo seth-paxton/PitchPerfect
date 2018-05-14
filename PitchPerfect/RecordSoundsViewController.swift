@@ -19,11 +19,6 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("Shows")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         stopRecordingButton.isEnabled = false
@@ -32,7 +27,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     // MARK: Record
     
     @IBAction func recordAudio(_ sender: Any) {
-        configureRecordingButtons(isRecording: false)
+        configureRecordingButtons(false)
         
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
@@ -52,7 +47,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     // MARK: StopRecording
     
     @IBAction func stopRecording(_ sender: Any) {
-        configureRecordingButtons(isRecording: true)
+        configureRecordingButtons(true)
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
         try! audioSession.setActive(false)
@@ -68,16 +63,10 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     // MARK: configureRecordingButtons
     
-    func configureRecordingButtons(isRecording recording: Bool) {
-        if recording {
-            recordingLabel.text = "Tap to Record"
-            stopRecordingButton.isEnabled = false
-            recordButton.isEnabled = true
-        } else {
-            recordingLabel.text = "Recording in Progress"
-            stopRecordingButton.isEnabled = true
-            recordButton.isEnabled = false
-        }
+    func configureRecordingButtons(_ isRecording: Bool) {
+        recordingLabel.text = isRecording ? "Recording in progress": "Tap to Record"
+        stopRecordingButton.isEnabled = !isRecording
+        recordButton.isEnabled = isRecording
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
